@@ -104,6 +104,57 @@ static void init_espnow_master(void)
     ESP_ERROR_CHECK( esp_now_set_pmk((const uint8_t *)MY_ESPNOW_PMK) );
 }
 
+static void PWM_calc(const my_data_t *data)
+{
+	uint32_t x_value;
+	uint32_t y_value;
+	bool dir_forward;
+	bool dir_backward;
+	bool dir_left;
+	bool dir_right;
+	float SteerPWM;
+	float DrivePWM;
+	
+	x_value = data->xcar;
+	y_value = data->ycar;
+	
+	dir_forward = 0;
+	dir_reverse = 0;
+	dir_left = 0;
+	dir_right = 0;
+	
+	//deadband code for x position
+	if (x_value > 1900){ // change deadband 
+		dir_right = 1;
+		SteerPWM = 100 * (x_value-1900)/2195; // calculate % duty cycle based on change in x pos
+	}
+	else if(x_value < 1700){
+		dir_left = 1;
+		SteerPWM = 100 * (1700-x_value)/1700; // calculate % duty cycle based on change in x pos
+	}
+	else{
+		dir_right = 0;
+		dir_left = 0;
+		Steer_PWM = 0;
+	}
+	
+	if (y_value > 2000){ // change deadband 
+		dir_forward = 1;
+		SteerPWM = 100 * (y_value-2000)/2095; // calculate % duty cycle based on change in x pos
+	}
+	else if(y_value < 1800){
+		dir_backward = 1;
+		SteerPWM = 100* (1800-y_value)/1800; // calculate % duty cycle based on change in x pos
+	}
+	else{
+		dir_forward = 0;
+		dir_backward = 0;
+		DrivePWM = 0;
+	}
+	
+	return;
+}
+
 void app_main(void)
 {
     s_recv_queue = xQueueCreate(10, sizeof(recv_packet_t));
@@ -112,4 +163,6 @@ void app_main(void)
     assert(err == pdPASS);
     
     init_espnow_master();
+    
+    
 }
