@@ -140,11 +140,11 @@ static void PWM_calc(const my_data_t *data)
 	
 	if (y_value > 2000){ // change deadband 
 		dir_forward = 1;
-		SteerPWM = 100 * (y_value-2000)/2095; // calculate % duty cycle based on change in x pos
+		DrivePWM = 100 * (y_value-2000)/2095; // calculate % duty cycle based on change in y pos
 	}
 	else if(y_value < 1800){
 		dir_backward = 1;
-		SteerPWM = 100* (1800-y_value)/1800; // calculate % duty cycle based on change in x pos
+		DrivePWM = 100* (1800-y_value)/1800; // calculate % duty cycle based on change in y pos
 	}
 	else{
 		dir_forward = 0;
