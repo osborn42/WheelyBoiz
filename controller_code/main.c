@@ -65,18 +65,12 @@ static void send_data_task(void *pvParameter)
 
     while (xQueueReceive(s_send_queue, &evt, portMAX_DELAY) == pdTRUE) {
 
+        vTaskDelay(50/portTICK_RATE_MS);
+
         my_data_populate(data);
 
         ESP_LOGI(TAG, "Sending %u bytes to " MACSTR, sizeof(my_data_t), MAC2STR(destination_mac));
         esp_err_t err = esp_now_send(destination_mac, (uint8_t*)data, sizeof(my_data_t));
-
-
-    	printf("Data: Button - %s, Switch - %s, xcar - %u, ycar - %u, xcam - %u\n",
-    	data->button_pushed ? "Pushed" : "Released",
-    	data->switch_flicked ? "Pushed" : "Released",
-    	data->xcar, data->ycar,
-    	data->xcam);
-
 
         if(err != ESP_OK) {
             ESP_LOGE(TAG, "Send error (%d)", err);
