@@ -9,9 +9,8 @@
 #define GPIO_INPUT_1	4
 
 static const char *TAG = "My_Slave";
-//int history = ~gpio_get_level(GPIO_INPUT_1);
 int switchFlickedState = 0;
-
+int history = 0;
 
 // Your function to populate a my_data_t to send
 void my_data_populate(my_data_t *data)
@@ -29,17 +28,17 @@ void my_data_populate(my_data_t *data)
     printf("yvalue: %d\n", yvalue);
     printf("xvalue2: %d\n", xvalue2);
 
-    /*
+    
     if(gpio_get_level(GPIO_INPUT_1) == 1){
-    	switchFlickedState = history;
     	if(history == 1){
     		history = 0;
     	}
     	if(history == 0){
     		history = 1;
     	}
+        switchFlickedState = history;
     }
-    */
+    
     data->switch_flicked = switchFlickedState;
 
     data->xcar = xvalue;
